@@ -75,11 +75,11 @@ theme_mode: dark
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: assets/lib/img/pfp.png
+avatar: assets/img/pfp.png
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
-social_preview_image: assets/lib/img/pfp.png
+social_preview_image: assets/img/pfp.png
 
 # boolean type, the global switch for TOC in posts.
 toc: true
