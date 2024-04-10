@@ -12,36 +12,51 @@ tags: [wazuh,soar,homelab]
 
 ## **Introduction**
 
-The aim of this project is to develop from scratch a fully integrated Security Orchestration, Automation, and Response (SOAR) solution incorporating Wazuh for intrusion detection & incident response coupled with TheHive for case management. Additionally, the goal is to create incident response efficiency through effective automated responses with robust logging. Inspiration for this project comes from my curiosity to learn about security operations and how numerous computers in organisations are protected from malware.
+The aim of this project is to develop from scratch a fully integrated Security Orchestration, Automation, and Response (SOAR) solution incorporating Wazuh for intrusion detection & incident response coupled with TheHive for case management. Additionally, the goal is to create incident response efficiency through effective automated responses with robust logging. Inspiration for this project comes from my curiosity to learn about security operations and wanting to develop my skills in developing and integrating different security tools.
 
-### What is Wazuh/TheHive/Shuffle?
+### Main software to be used
 
-(to be explained)
+**Wazuh**
+: Wazuh is an open-source SIEM (Security Information Event Management) system that is used to collect, analyze, aggregate, index, and analyze security-related data which is used to detect intrusions, attacks, vulnerabilities, and malicious activity. It will be the core intrusion detection system in this project as we monitor security events.
+
+
+**TheHive**
+: Another open source platform, it's a 4-in-1 security incident response platform featuring case management, automation, and collaboration tools in addition to threat intelligence support. We'll be using this for our case management system.
+
+**Shuffle**
+: This will be our SOAR platform to build security workflows and receive alerts, check malware reputation score with VirusTotal and send alert emails.
 
 ### Mapping out our lab logically
 
-Visual diagram for the logical implementation of this lab (to be explained)
+Visual diagram for the logical implementation of this lab. This will be our visual guide for setting up and configuring the lab, and how data might flow through each component so we can ultimately achieve the objectives of efficient and automated incident response.
 ![Diagram](assets/img/diagram.png)
 
 ## **Getting started**
 
-### Installing Windows 10 vm
+### Installing Windows virtual machine
 
-This will be our client PC, hosted on an ESXi server.
+We will need a Windows 10/11 VM to simulate the client environment. Personally, I used Oracle VM VirtualBox for my virtualisation software. There are many online tutorials that show how to setup and create one such as this <a href="https://www.extremetech.com/computing/198427-how-to-install-windows-10-in-a-virtual-machine" target="_blank">article</a> for Windows 10 and this YouTube video for Windows 11:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CNFxFdMT7Kg?si=KImZd41vutNS9pGC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+__________________________________
+---
+
+The specifications of the VM I've made are shown down below, I'll be using this VM for the duration of the project.
 
 ![PCspecs](assets/img/windows10vmspecs.png)
 
 ###  Installing sysmon with sysmonconfig
 
-Sysmon is a Windows system service and device driver that provides detailed information about process creations, network connections, file changes, registry modifications, and more. Sysmon logs will be ingested into the SIEM system so malicious activity can be identified. We'll be using [sysmon-modular](https://github.com/olafhartong/sysmon-modular), a sysmon configuration that extends its functionality to monitor and log more comprehensively.
+Sysmon is a Windows system service and device driver that provides detailed information about process creations, network connections, file changes, registry modifications, and more. Sysmon logs will be ingested into the SIEM system so malicious activity can be identified. We'll be using 
+<a href="https://github.com/olafhartong/sysmon-modular" target="_blank">sysmon-modular</a> a sysmon configuration that extends its functionality to monitor and log more comprehensively.
 
-Once sysmon is extracted, and our [sysmonconfig.xml](https://raw.githubusercontent.com/olafhartong/sysmon-modular/master/sysmonconfig.xml) is saved into the same directory as sysmon. We can open up a Powershell terminal inside the directory and install our config using:
+Once sysmon is extracted, and our <a href="https://raw.githubusercontent.com/olafhartong/sysmon-modular/master/sysmonconfig.xml" target="_blank">sysmonconfig.xml</a> is saved into the same directory as sysmon. We can open up a Powershell terminal inside the directory and install our config using:
 
 ```powershell
 .\Sysmon64.exe -i .\sysmonconfig.xml
 ```
-
-![sysmondir](assets/img/sysmon.png)
 
 To verify that we now have Sysmon installed on our client PC, open Event Viewer and go to Applications and Services Log > Microsoft > Windows, and look for the Sysmon folder.
 
@@ -65,7 +80,7 @@ In addition, I will be creating a firewall to be used for both servers to restri
 
 This step compromises primarily off bash commands to handle the installation of both Wazuh and TheHive. The first step is to connect to our Wazuh server through SSH, I'll be using PuTTY to connect to the server from my host machine. 
 
-> You won't be able to launch the Droplet console which can be found in the access tab to achieve the same task. Instead, 
+> You won't be able to launch the Droplet console (found in the access tab) to achieve the same task as we configured our droplets to only accept connections from our IP address. Instead, install a ssh client on your host machine (such as PuTTY) and connect from there.
 {: .prompt-warning }
 
 Once were connected to our wazuh server, we can begin to update the Ubuntu system using:
@@ -205,7 +220,7 @@ __________________________________
 
 Our next step is to test Wazuh's ability to detect and report anomalies within the sysmon logs that are generated on our client PC. We can do this by installing straight malware, or just use grey-hat tools. For this project, i'll be using a tool called mimikatz, a popular tool by red-teamers that is designed to extract credentials such as passwords, hashes, PIN codes, kerberos tickets and other sensitive information from Windows-based systems.
 
-Heading back onto our client VM, mimikatz can be installed [here](https://github.com/gentilkiwi/mimikatz/releases/download/2.2.0-20220919/mimikatz_trunk.zip). 
+Heading back onto our client VM, mimikatz can be installed <a href="https://github.com/gentilkiwi/mimikatz/releases/" target="_blank">here</a> (File name: mimikatz_trunk.zip). 
 
 > You will need to exclude the downloads folder from Microsoft Defender and disable any browser protection that may be on. Otherwise, mimikatz will get blocked.
 {: .prompt-warning }
