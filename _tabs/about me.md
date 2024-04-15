@@ -17,7 +17,7 @@ Welcome to my cyber security blog where I'll be building projects (and my skills
 
 
 ## ⏳ Future plans
-- [ ] Learn Splunk and work with Active Directory (maybe another project for this?)
+- [ ] Work with Splunk and Active Directory (maybe another project for this?)
 - [ ] HTB challenges and writeups
 - [ ] Research into malware analysis
 

@@ -34,14 +34,14 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Rami Butto
+  name: Rami B
   email: ramiiib27@gmail.com
   links:
     # The first element serves as the copyright owner's link
-    - https://github.com/ramiiib # change to your github homepage
+    - https://www.linkedin.com/in/ramiib # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    - https://www.linkedin.com/in/ramiib
+    - https://github.com/ramiiib
 
 google_site_verification: # fill in to your verification string
 
@@ -65,7 +65,7 @@ goatcounter:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode: dark
+theme_mode: 
 
 # The CDN endpoint for images.
 # Notice that once it is assigned, the CDN url
