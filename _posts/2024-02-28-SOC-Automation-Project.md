@@ -36,7 +36,7 @@ Visual diagram for the logical implementation of this lab. This will be our visu
 
 ## **Getting started**
 
-### Installing Windows virtual machine
+### Creating a Windows virtual machine
 
 We will need a Windows 10/11 VM to simulate the client environment. Personally, I used Oracle VM VirtualBox for my virtualisation software. There are many online tutorials that show how to setup and create one such as this <a href="https://www.extremetech.com/computing/198427-how-to-install-windows-10-in-a-virtual-machine" target="_blank">article</a> for Windows 10 and this YouTube video for Windows 11:
 
