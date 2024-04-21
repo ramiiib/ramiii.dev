@@ -15,16 +15,16 @@ image: assets/img/project1.svg
 
 ## **Introduction**
 
-The aim of this project is to develop from scratch a fully integrated Security Orchestration, Automation, and Response (SOAR) solution incorporating Wazuh for intrusion detection & incident response coupled with TheHive for case management. Additionally, the goal is to create incident response efficiency through effective automated responses with robust logging. Inspiration for this project comes from my curiosity to learn about security operations and wanting to develop my skills in developing and integrating different security tools.
+The aim of this project is to develop from scratch a fully integrated SOAR (Security Orchestration, Automation, and Response) solution incorporating Wazuh for intrusion detection & incident response coupled with TheHive for case management. Additionally, the goal is to create incident response efficiency through effective automated responses with robust logging. Inspiration for this project comes from my curiosity to learn about security operations and wanting to develop my skills in developing and integrating different security tools.
 
 ### Main software to be used
 
 **Wazuh**
-: Wazuh is an open-source SIEM (Security Information Event Management) system that is used to collect, analyze, aggregate, index, and analyze security-related data which is used to detect intrusions, attacks, vulnerabilities, and malicious activity. It will be the core intrusion detection system in this project as we monitor security events.
+: Wazuh is an open-source SIEM (Security Information Event Management) system that collects, analyses, aggregates, indexes, and analyses security-related data which is used to detect intrusions, attacks, vulnerabilities, and malicious activity. It will be the core intrusion detection system in this project as we monitor security events.
 
 
 **TheHive**
-: Another open source platform, it's a 4-in-1 security incident response platform featuring case management, automation, and collaboration tools in addition to threat intelligence support. We'll be using this for our case management system.
+: Another open-source platform, it's a 4-in-1 security incident response platform featuring case management, automation, and collaboration tools in addition to threat intelligence support. We'll be using this for our case management system.
 
 **Shuffle**
 : This will be our SOAR platform to build security workflows and receive alerts, check malware reputation score with VirusTotal and send alert emails.
@@ -80,7 +80,7 @@ In addition, I will be creating a firewall to be used for both servers to restri
 
 ### Installing Wazuh and TheHive 
 
-This step consists primarily of using bash commands to handle the installation of both Wazuh and TheHive. The first step is to connect to our Wazuh server through SSH, I'll be using PuTTY to connect to the server from my host machine. 
+This step consists primarily of using bash commands to manage the installation of both Wazuh and TheHive. The first step is to connect to our Wazuh server through SSH, I'll be using PuTTY to connect to the server from my host machine. 
 
 > You won't be able to launch the Droplet console (found in the access tab) to achieve the same task as we configured our droplets to only accept connections from our IP address. Instead, install a ssh client on your host machine (such as PuTTY) and connect from there.
 {: .prompt-warning }
@@ -95,7 +95,7 @@ Then installing Wazuh:
 curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
 ```
 
-Once installation is finished, Wazuh will give you a default username and password so you can login into the web interface. Take note of these credentials, then copy and paste the IP address into the web browser of your choice. The Wazuh dashboard will greet you with the login screen and you'll be able to access all its features from there.
+Once installation has finished, Wazuh will give you a default username and password so you can login into the web interface. Take note of these credentials, then copy and paste the IP address into the web browser of your choice. The Wazuh dashboard will greet you with the login screen and you'll be able to access all its features from there.
 
 ```
 - To access Wazuh:
@@ -153,7 +153,7 @@ nano /etc/cassandra/cassandra.yaml # Command to edit cassandra config file
 ```
 ![nanosc](assets/img/nanosc.png)
 
-Then remove old files using that default installation of Cassandra left, start the service, and check if it's running: 
+Then remove old files from the default installation that Cassandra left, start the service, and check if it's running: 
 ```bash
 rm -rf /var/lib/cassandra/*
 systemctl start cassandra.service
@@ -199,14 +199,14 @@ After a few seconds, Wazuh dashboard will show you that you have one active agen
 
 ![wazuhdashboard](assets/img/wazuhdashboard.png)
 
-With the configuration of Wazuh and TheHive now completed, we can start putting them to use. Our next step is to create custom alerts based on the telemetry we are provided.
+With the configuration of Wazuh and TheHive now completed, we can start putting them to use. Our next step is to create custom alerts based on the telemetry we are to create using grey-hat tools.
 
 ## **Generating telemetry**
 ### Setting up
 
-Telemetry is the process of collecting, recording, and analysing data from computer systems or networks to understand how they are operating. This data can be system performance metrics, network traffic details, application behavior, security event information and/or user activities. Our next step is to tell Wazuh to ingest the logs sysmon generates.
+Telemetry is the process of collecting, recording, and analysing data from computer systems or networks to understand how they are operating. This data can be system performance metrics, network traffic details, application behaviour, security event information and/or user activities. Our next step is to tell Wazuh to ingest the logs sysmon generates.
 
-On our client PC, We'll first need to take note of sysmon's full name. This can be found inside the log properties for sysmon using event viewer.
+On our client PC, We'll first need to take note of sysmon's full name. This is found inside the log properties for sysmon using event viewer.
 
 ![channelname](assets/img/channelname.png)
 
@@ -227,7 +227,7 @@ Once that’s done, we can save the file and restart the Wazuh service.
 
 <br>
 
-### Using mimikatz
+### Using Mimikatz
 
 Our next step is to test Wazuh's ability to detect and report anomalies/incidents within the sysmon logs that are generated on our client PC. We can do this by installing straight-up malware, or just using grey-hat tools. For this project, I'll be using a tool called mimikatz, a popular tool by red-teamers that is designed to extract credentials such as passwords, hashes, PIN codes, Kerberos tickets and other sensitive information from Windows-based systems.
 
@@ -246,7 +246,7 @@ We can see that it has indeed responded pretty heavily.
 
 ![alerts](assets/img/alerts.png)
 
-Many of the alerts consisted of tactics such as privilege escalation and command and control. Each alert on a basic level contains a timestamp, technique(s), tactic(s), description, level (severity rating), and a Rule ID. However, each alert can be looked into individually to reveal even more fields related to the alert.
+Many of the alerts consisted of tactics such as privilege escalation and command & control. Each alert on a basic level contains a timestamp, technique(s), tactic(s), description, level (severity rating), and a Rule ID. However, each alert can be investigated individually to reveal even more fields related to the alert.
 
 ![alerts](assets/img/alertdetails.png)
 
@@ -260,7 +260,7 @@ However, when we try search for mimikatz in the search bar to detect if it was e
 
 ![noresults](assets/img/noresults.png)
 
-<blockquote class="prompt-info"><p>It is possible to get Wazuh to log everything, this can be done by configuring the ossec.conf file to <code class="language-plaintext highlighter-rouge">&lt;logall&gt;yes&lt;/logall&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;logall_json&gt;yes&lt;/logall_json&gt;</code>, the rest of the instructions can be found <a href="https://documentation.wazuh.com/current/user-manual/manager/wazuh-archives.html" target="_blank">here.</a> </p></blockquote>
+<blockquote class="prompt-info"><p>It is possible to get Wazuh to log everything, this can be done by configuring the <code class="language-plaintext highlighter-rouge">ossec.conf</code> file to <code class="language-plaintext highlighter-rouge">&lt;logall&gt;yes&lt;/logall&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;logall_json&gt;yes&lt;/logall_json&gt;</code>, the rest of the instructions can be found <a href="https://documentation.wazuh.com/current/user-manual/manager/wazuh-archives.html" target="_blank">here.</a> </p></blockquote>
 
 ### Creating a custom rule
 
@@ -322,7 +322,7 @@ Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh
 ```
 {: file='local_rules.xml'}
 
-Primarily, we will focus on changing these fields:
+Primarily, we will focus on changing these fields for our custom rule:
 - ID: Custom rules start from 100,000. As we can see, the previous rule has an ID of 100,001 so we will change our custom rule to 100,002.
 - Level: This is the severity rating we want our alert to have, 15 being the highest possible level. For now, we'll just make it 12.
 - Field name: Currently it's <code class="language-plaintext highlighter-rouge">win.eventdata.parentImage</code>, which is a good field as it tracks the chain of events in process creation. but I will change it to <code class="language-plaintext highlighter-rouge">win.eventdata.originalFileName</code>. I made this choice because if I were to use something like <code class="language-plaintext highlighter-rouge">win.eventdata.image</code>, a simple file rename would render the whole rule useless.
@@ -360,5 +360,65 @@ And hooray! A new alert popped up on our security events dashboard and it's the 
 As we can see, the alert does show the <code class="language-plaintext highlighter-rouge">win.eventdata.image</code> field to be mimicats.exe. But, the <code class="language-plaintext highlighter-rouge">win.eventdata.originalFileName</code> field shows mimikatz.exe. Ultimately, it was a good decision to use the <code class="language-plaintext highlighter-rouge">win.eventdata.originalFileName</code> field as the rule still triggered even with file rename, which would not have happened if we were to just track the <code class="language-plaintext highlighter-rouge">win.eventdata.image</code> field.
 
 ## Integrating Shuffle (SOAR)
+### Creating the workflow
+
+Now we will use Shuffle to start creating the SOAR aspect of our project. 
+
+Upon creating a new workflow, we're greeted with this default screen:
+
+![workflow](assets/img/workflow.png)
+
+Essentially, workflows in Shuffle connect different apps, triggers and variables to achieve automation for any task you may have in mind. Starting off, we will add a trigger to our workflow (a trigger is how our workflow gets accessed/run) which will be a webhook. The webhook will allow custom, real-time HTTP input (which will be Wazuh alerts) into our workflow. 
+
+![webhook](assets/img/webhook.png)
+
+Next, we will edit the Call section of the Shuffle tools app to hold <code class="language-plaintext highlighter-rouge">$exec</code>. It will be much clearer why we did this in just a moment.
+
+![$exec](assets/img/$exec.png)
+
+To get Wazuh connected with Shuffle, we need to copy the Webhook URI and make a new integration tag inside <code class="language-plaintext highlighter-rouge">ossec.conf</code> of our Wazuh manager. So, moving forward, we will SSH into our Wazuh droplet and add the integration tag inside <code class="language-plaintext highlighter-rouge">ossec.conf</code> for Shuffle. 
+
+> The <code class="language-plaintext highlighter-rouge">ossec.conf</code> file for the Wazuh manager is located at <code class="language-plaintext highlighter-rouge">/var/ossec/etc/ossec.conf</code> and we can edit the file using nano ```nano /var/ossec/etc/ossec.conf```. More integration tag examples for different external APIs can be found <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/integration.html#configuration-example" target="_blank">here</a>.
+{: .prompt-tip }
+
+```xml
+<!-- Integration with Shuffle -->
+<integration>
+  <name>shuffle</name>
+  <hook_url>http://IP:3001/api/v1/hooks/HOOK_ID</hook_url> <!-- Replace with your Shuffle hook URL -->
+  <level>3</level>
+  <alert_format>json</alert_format>
+  <options>{"data": {"title": "Custom title"}}</options> <!-- Replace with your custom JSON object -->
+</integration>
+```
+
+The only thing we will be changing is <code class="language-plaintext highlighter-rouge">&lt;hook_url&gt;</code> to the Webhook URI we copied earlier and replacing <code class="language-plaintext highlighter-rouge">&lt;level&gt;</code> to <code class="language-plaintext highlighter-rouge">&lt;rule_id&gt;</code>. As currently, <code class="language-plaintext highlighter-rouge">&lt;level&gt;3&lt;/level&gt;</code> means to send all level 3 alerts to shuffle, but we only want to send over alerts for mimikatz so we can remove this tag and add <code class="language-plaintext highlighter-rouge">&lt;rule_id&gt;&lt;/rule_id&gt;</code> with our rule ID for mimikatz (which was 100002). Lastly, we will also remove the <code class="language-plaintext highlighter-rouge">&lt;options&gt;</code> tag as we don't want to overwrite any fields that's provided in the JSON object.
+
+```xml
+<integration>
+  <name>shuffle</name>
+  <hook_url>https://shuffler.io/api/v1/hooks/webhook_8c7acdd4-f687-426e-bbb0-fd8e4d10b0bd </hook_url>
+  <rule_id>100002</rule_id>
+  <alert_format>json</alert_format>
+</integration>
+```
+{: file='ossec.conf'}
+
+Once that's done and saved, we need to restart the Wazuh manager.
+```bash
+systemctl restart wazuh-manager.service
+```
+
+Now let's regenerate the mimikatz telemetry on our client PC to see if our workflow will work so far. We will run mimikatz again on our client PC and start the webhook. We can see workflow executions by clicking on the 'Show executions' button below:
+
+![execution](assets/img/execution.png)
+
+As we can see, a workflow run did pop up on the right. Clicking on this, we get the details of the workflow run.
+
+![executiondetails](assets/img/executiondetails.png)
+
+The execution argument gave us all of the alert details that were generated from Wazuh! Our next step is to now extract the SHA256 file hash from the alert and check it with VirusTotal for any known security threats or malicious activities associated with the file (which will be very likely true for mimikatz).
+
+### Integrating VirusTotal
 
 Coming soon...
