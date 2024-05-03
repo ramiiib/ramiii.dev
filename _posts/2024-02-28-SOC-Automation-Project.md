@@ -73,8 +73,10 @@ I'll be using DigitalOcean as my cloud provider, but any other cloud provider wi
 
 ![droplets](assets/img/droplets.png)
 
-In addition, I will be creating a firewall to be used for both servers to restrict all incoming traffic on TCP and UDP, and only allow requests from my IP address. Outbound rules will be left on default. This measure is to safeguard our servers from unauthorised access attempts by intruders or any automated bots or scanners traversing the Internet hitting our server and trying to break in.
+In addition, I will be creating a firewall to be used for both servers to restrict all incoming traffic on TCP and UDP, and only allow requests from my IP address. Outbound rules will be left on default. This measure is to safeguard our servers from unauthorised access attempts by intruders or any automated bots or scanners traversing the Internet hitting our servers and trying to break in.
 ![firewall](assets/img/firewall.png)
+
+Our droplets then need to be added to our firewall.
 
 ![dropletswithfirewall](assets/img/firewall+droplets.png)
 
@@ -421,4 +423,57 @@ The execution argument gave us all of the alert details that were generated from
 
 ### Integrating VirusTotal
 
-Coming soon...
+We can use Regex to parse the SHA256 file hash. This can be done by changing the 'Find Actions' dropdown inside the Shuffle Tools app to 'Regex capture group'. Inside the 'Input data' text box, we will input <code class="language-plaintext highlighter-rouge">$exec.text.win.eventdata.hashes</code> (which is the source data or key that the Regex function should work on). and in the Regex textbox, we will create and input a Regex pattern that will look for the SHA256 hash and extract it.
+
+```plaintext
+SHA256=([A-Fa-f0-9]{64})
+```
+
+> Essentially, this piece of Regex looks for <code class="language-plaintext highlighter-rouge">SHA256=</code> in the string and
+captures the first 64 hexadecimal characters after it 
+(which is the length of a SHA256 hash).
+{: .prompt-info }
+
+![](assets/img/regexpic.png)
+
+Now, we can go ahead and rerun the workflow to see if it extracts the SHA256 hash correctly. 
+
+![](assets/img/extractregexsuccess.png)
+
+Our Regex function worked and extracted the hash! Our next step is to send that hash over to VirusTotal and receive its reputation score.
+
+To begin, we will need to add the VirusTotal app and add authentication so we can connect to VirusTotal's API. We'll also change the 'Find Actions' dropdown to 'Get a hash report'.
+
+![](assets/img/virustotal.png)
+
+However, we will need an API key to authenticate, which can obtained after you create an account with VirusTotal. Once our API key is copied, we can click the 'AUTHENTICATE VIRUSTOTAL V3' button and authenticate.
+
+![](assets/img/auth.png)
+
+The only parameter we'll need to change in our VirusTotal app is 'Id'. As seen previously in the workflow run for extracting the SHA256, the hash string is under the "group_0" key, so we'll need to input the variable containing the hash string.
+
+![](assets/img/addID.gif)
+
+So, we'll just check if we do get this hash report from VirusTotal by rerunning our workflow.
+
+![](assets/img/vtdata.png)
+
+It looks like a success! We got back a JSON object from VirusTotal with a <code class="language-plaintext highlighter-rouge">"status":200</code> (HTTP status code that means the request was successful) containing a body of data all related to the file analysis such as hashes, sandbox verdicts and antivirus scan results. Furthermore, the <code class="language-plaintext highlighter-rouge">last_analysis_stats</code> key provides how many vendors flagged it as malicious, and ultimately tells us if the file is safe or not.
+
+```json
+"last_analysis_stats": {
+  "malicious" : 64
+  "suspicious" : 0
+  "undetected" : 8
+  "harmless" : 0
+  "timeout" : 0
+  "confirmed-timeout" : 0
+  "failure" : 0
+  "type-unsupported" : 4
+}
+```
+{: file='get_a_hash_report_.json'}
+
+### Integrating TheHive
+
+This part is where we will create case management, coming soon...
