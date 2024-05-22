@@ -97,7 +97,7 @@ Then installing Wazuh:
 curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
 ```
 
-Once installation has finished, Wazuh will give you a default username and password so you can login into the web interface. Take note of these credentials, then copy and paste the IP address into the web browser of your choice. The Wazuh dashboard will greet you with the login screen and you'll be able to access all its features from there.
+Once the installation has finished, Wazuh will give you a default username and automatically generate a strong password so you can login into the web interface. Take note of these credentials, then copy and paste the public IPv4 address of the Wazuh droplet into the web browser of your choice. The Wazuh dashboard will greet you with the login screen and you'll be able to access all its features from there.
 
 ```
 - To access Wazuh:
@@ -146,6 +146,20 @@ sudo apt-get update
 sudo apt-get install -y thehive
 ```
 
+To access TheHive, copy and paste the IPv4 address of TheHive droplet into the web browser of your choice, on port 9000.
+
+```
+- To access TheHive:
+http://ipaddress:9000
+```
+
+You will be greeted with a login screen, and the default credentials to login are:
+- Username: admin@thehive.local
+- Password: secret
+
+> It's a good idea to change the default password once you login, more information on how to can be found <a href="https://docs.strangebee.com/thehive/administration/first-start/#2-change-your-password" target="_blank">here</a>.
+{: .prompt-tip }
+
 ### Configuring TheHive for use
 
 The first step is to connect to TheHive server and configure Cassandra (used for TheHive's database) to work with TheHive, this includes changing its listening, RPC, and seed address to TheHive server IP address, as well as the cluster name (optional but recommended). 
@@ -162,7 +176,7 @@ systemctl start cassandra.service
 systemctl status cassandra.service
 ```
 
-Next up is to configure Elasticsearch, changing the cluster name, node name, and network host to TheHive IP address, as well as removing the default 2nd node in the 'cluster.initial_master_nodes' field.
+Next up is to configure Elasticsearch, changing the cluster name, node name, and network host to TheHive IP address, as well as removing the default 2nd node in the <code class="language-plaintext highlighter-rouge">cluster.initial_master_nodes</code> field.
 ```bash
 nano /etc/elasticsearch/elasticsearch.yml
 ```
@@ -173,7 +187,7 @@ Then we need to give TheHive ownership to the attachment storage configuration w
 chown -R thehive:thehive /opt/thp
 ```
 
-And lastly, modify TheHive's configuration. This includes changing the hostname IP address for both storage and 'index.search' fields, the cluster name to the one we used for Cassandra and application.baseUrl to the public IP of TheHive.
+And lastly, modify TheHive's configuration. This includes changing the hostname IP address for both storage and <code class="language-plaintext highlighter-rouge">index.search</code> fields, the cluster name to the one we used for Cassandra and <code class="language-plaintext highlighter-rouge">application.baseUrl</code> to the public IP of TheHive.
 
 ```bash
 nano /etc/thehive/application.conf
@@ -476,4 +490,68 @@ It looks like a success! We got back a JSON object from VirusTotal with a <code 
 
 ### Integrating TheHive
 
-This part is where we will create case management, coming soon...
+As previously mentioned, TheHive will be used for our case management. To start, we'll add TheHive app to our workflow.
+
+We need to configure a few things related to organisations and users, so head over to TheHive dashboard. Currently, there is one default organisation, admin, that contains one user with full admin privileges but we will create a new organisation. To do this, head to the organisations tab and click on the + icon, then give it a name and description. 
+
+![](assets/img/thehivedashboard.png)
+
+After that, we'll add the 2 users. One user will be of <code class="language-plaintext highlighter-rouge">normal</code> type, which is a regular account that an individual would use to manage and respond to security incidents (or just users with GUI access), then giving the user a name, login, and profile with pre-defined permissions which we will put it as <code class="language-plaintext highlighter-rouge">analyst</code>. The 2nd user will be of type <code class="language-plaintext highlighter-rouge">service</code>, which is designed for API users or bots. It will also require a name, login, and profile will be <code class="language-plaintext highlighter-rouge">analyst</code> too. 
+
+Normal user         |  Service user
+:-------------------------:|:-------------------------:
+![](assets/img/normal.png)  |  ![](assets/img/service.png)
+
+After we've completed that, we'll also need to give the <code class="language-plaintext highlighter-rouge">normal</code> type user a password. To authenticate with Shuffle, we'll generate an API key from the <code class="language-plaintext highlighter-rouge">service</code> type user and keep note of it. These options can be accessed by pressing the preview button when hovering over a user.
+
+Heading back to shuffle, we'll authenticate TheHive app with the API key just like we did with VirusTotal earlier. But the URL will be the IPv4 address of TheHive server on port 9000 (<code class="language-plaintext highlighter-rouge">http://ipaddress:9000</code>). We can then change the ‘Find Actions’ dropdown to ‘Create alert’, the alert will need to have a date, description, and more. So, after clicking on the 'Hide Body' checkbox, we can edit a few parameters/text boxes for TheHive app, these include:
+
+- Date: We'll go into execution argument and choose <code class="language-plaintext highlighter-rouge">utcTime</code>, so the full argument inside the textbox should look like <code class="language-plaintext highlighter-rouge">$exec.text.win.eventdata.utcTime</code>.
+- Description: This will be custom-made combining execution arguments like hostname and user. A sample description can be "Mimikatz detected on host: <code class="language-plaintext highlighter-rouge">$exec.text.win.system.computer</code> from user: <code class="language-plaintext highlighter-rouge">$exec.text.win.eventdata.user</code>".
+- Flag: Case's flag, True to mark the case as important. We'll make it false.
+- Pap: Stands for Permissible Actions Protocol. This field is used to define the level of exposure or sharing restrictions of the alert information, dictating whether to take an active or passive response. We'll set it as 2 for AMBER, more information on these protocols can be found <a href="https://cert.ssi.gouv.fr/csirt/sharing-policy/" target="_blank">here</a>. 
+
+> |PAP levels and their corresponding number, <a href="https://thehive-project.github.io/TheHive4py/reference/models/" target="_blank">source</a>.  |
+ |---------|---------------|
+| WHITE   | 0             |
+| GREEN   | 1             |
+| AMBER   | 2             |
+| RED     | 3             |
+{: .prompt-info }
+- Severity: This will be 2, for medium severity.
+- Source: Wazuh
+- Sourceref: We can put the rule ID, "Rule: 100002".
+- Status: New
+- Summary: More detailed description, we can include more details such as processID and commandLine. An example summary would be, "Mimikatz activity detected on host: $exec.text.win.system.computer and the processID is: $exec.text.win.system.processID and the command line is: $exec.text.win.eventdata.commandLine"
+- Tags: We can create tags using a string array, we'll make one that contains just a string for the MITREid: ["T1003"]
+- Title: We can just tie it to the alert itself using the execution argument: $exec.title
+- Tlp: Stands for Traffic Light Protocol, which relates to the confidentiality and handling of information. We'll make it 2 for AMBER.
+- Type: Internal
+
+So far, so good.
+
+![](assets/img/sofar.png)
+
+<br>
+
+Before we rerun our workflow, we'll need to modify the firewall for the droplets to allow incoming traffic from all IPs on port 9000 so it can work. So, we can head over to DigitalOcean to add a custom rule to the firewall.
+
+![](assets/img/custom.png)
+
+Now we can rerun our workflow and see if it's successful. It turns out that it did work correctly. Let's check if the alert was generated by logging in the user of <code class="language-plaintext highlighter-rouge">normal</code> type we made earlier (with the sample email and password we configured earlier) and heading to the alerts tab.
+
+![](assets/img/thehivesuccess.png)
+
+Hooray! Our alert was generated, along with all the fields and metadata we gave it in Shuffle.
+
+![](assets/img/thehivealert.png)
+
+Clicking on the alert, much more information about it is displayed, along with the summary we configured earlier.
+
+![](assets/img/thehivealertdetails.png)
+
+Ultimately, our case management component should now be complete. Our next step is to create functionality to send an email to us with these alert details and take an active response from the email.
+
+### Email setup
+
+Coming soon...
