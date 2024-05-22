@@ -5,6 +5,7 @@ date: 2024-02-28 18:45:00 +1000
 categories: [Projects,Homelab]
 tags: [wazuh,soar,homelab]
 author: Me
+pin: true
 image: assets/img/project1.svg
 ---
 
