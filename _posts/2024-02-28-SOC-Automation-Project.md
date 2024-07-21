@@ -7,6 +7,7 @@ tags: [wazuh,soar,homelab]
 author: Me
 pin: true
 image: assets/img/project1.svg
+lastmod: 2024-07-22 00:38:50 +0800
 ---
 
 # **Project objective**
