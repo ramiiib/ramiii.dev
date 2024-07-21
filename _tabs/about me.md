@@ -18,8 +18,11 @@ Welcome to my cyber security blog where I'll be building projects (and my skills
 
 # TO-DO
 
-## 🚧 In Progress
+## ✅ Completed
 - [x] SOAR automation project
+
+## 🚧 In Progress
+- Nothing yet
 
 
 ## ⏳ Future plans

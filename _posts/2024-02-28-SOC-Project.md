@@ -395,7 +395,7 @@ Next, we will edit the Call section of the Shuffle tools app to hold <code class
 
 To get Wazuh connected with Shuffle, we need to copy the Webhook URI and make a new integration tag inside <code class="language-plaintext highlighter-rouge">ossec.conf</code> of our Wazuh manager. So, moving forward, we will SSH into our Wazuh droplet and add the integration tag inside <code class="language-plaintext highlighter-rouge">ossec.conf</code> for Shuffle. 
 
-> The <code class="language-plaintext highlighter-rouge">ossec.conf</code> file for the Wazuh manager is located at <code class="language-plaintext highlighter-rouge">/var/ossec/etc/ossec.conf</code> and we can edit the file using nano ```nano /var/ossec/etc/ossec.conf```. More integration tag examples for different external APIs can be found <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/integration.html#configuration-example" target="_blank">here</a>.
+> The <code class="language-plaintext highlighter-rouge">ossec.conf</code> file for the Wazuh manager is located at <code class="language-plaintext highlighter-rouge">/var/ossec/etc/ossec.conf</code> and we can edit the file using nano ```nano /var/ossec/etc/ossec.conf``` inside a CLI. More integration tag examples for different external APIs can be found <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/integration.html#configuration-example" target="_blank">here</a>.
 {: .prompt-tip }
 
 ```xml
@@ -555,4 +555,60 @@ Ultimately, our case management component should now be complete. Our next step 
 
 ### Email setup
 
-Coming soon...
+Integrating the email app is really easy, once we've added it to our workflow and connected VirusTotal to it, all we have to do is specify the recipient, subject, and body.
+
+I've used a disposable email by SquareX to test this out. We can then write a subject and body that tells us that mimikatz has been detected along with some other relevant details. My sample body was:  
+
+```
+Time: $exec.text.win.eventdata.utcTime
+Title: $exec.title
+Host: $exec.text.win.system.computer
+```
+
+![](assets/img/emailworkflow.png)
+
+> This never worked out. The email app turned out to be broken and could not send emails over shuffle, I was talking to a shuffle developer through the shuffle discord and he verified that it was broken for everyone (not just me), he said that a patch would roll out soon to fix it which is great. But for now, instead of sending emails over shuffle, I used the <code class="language-plaintext highlighter-rouge">Send email smtp</code> option instead. I needed an Email API, so I signed up to SendGrid at first, but that gave me issues and didnt work. I then tried Mailgun, and that worked pretty much flawlessly thankfully.
+{: .prompt-warning }
+
+After signing up for Mailgun, I took note of the SMTP hostname, port and credentials and plugged them into Shuffle as so. 
+
+![](assets/img/smtpcreds.png)
+
+Now we can rerun the workflow and check to see if we get an email with the body we created.
+
+![](assets/img/emailtest.png)
+
+Hooray! We got an email containing the time, title and host machine. This, of course, could be improved to be more professional and contain even more details about the event. We now have a complete workflow that receives a mimikatz alert from Wazuh, takes the SHA256 of the file, runs it through VirusTotal, creates an alert in TheHive and sends an email out about the alert. Now we're left with the active response component.
+
+### Active response
+
+This part was really difficult to plan because there weren't many resources or examples to read up on. In my research of Wazuh's active response capabilities on a Windows endpoint, I came across this <a href="https://documentation.wazuh.com/current/proof-of-concept-guide/detect-remove-malware-virustotal.html" target="_blank">proof of concept guide</a> which is on detecting and removing malware.
+
+> TLDR: We enable the FIM (File integrity monitoring) module in Wazuh to monitor for a directory in near real-time. Then add VirusTotal integration and active response code blocks inside <code class="language-plaintext highlighter-rouge">/var/ossec/etc/ossec.conf</code> which will enable Wazuh to run a Python script (turned into an executable) to remove the malicious file determined by VirusTotal. Lastly, we create 2 rules in <code class="language-plaintext highlighter-rouge">/var/ossec/etc/rules/local_rules.xml</code> to alert about the active response results.
+{: .prompt-info }
+
+I did test it out myself and it worked correctly, but it is rather slow, taking around 3-5 seconds for the full detection and deletion process to complete (in a _real-world_ situation, this would be completely useless because the malware would be executed instantaneously).
+
+<iframe src="https://drive.google.com/file/d/1m9qm-0pdT7kv1Yc6aqLwcZPQRVPEQ_YZ/preview" width="800" height="480" allow="fullscreen"></iframe>
+<em>Apologies for the bad video quality</em>
+
+<br>
+<br>
+
+![](assets/img/activeresponse.png)
+
+We can combine this with our Shuffle workflow so that when Mimikatz is executed, it goes through the workflow and we ultimately get an email that says it was run but also deleted. This approach is the best possible outcome I can get working with Wazuh's limited/not flexible active response capabilities and the ultimate conclusion to the project that I can implement. 
+
+> Unfortunately, this approach didnt work at all. Wazuh will be able to delete malware that is downloaded into the downloads folder, but if the file is downloaded and run immediately after, Wazuh will not be able to forcefully delete the malware (either because the malware is being actively used or something else I'm not aware of).
+{: .prompt-warning }
+
+<iframe src="https://drive.google.com/file/d/1qniSA9VWQmsuV5Pobvbk6OWwXWCM3LMD/preview" width="800" height="480" allow="fullscreen"></iframe>
+<em>Click on the pop out icon for better quality</em>
+
+## Concluding thoughts
+
+This project turned out way bigger and much longer than I ever thought it would be. But, I did learn so much when it comes to security operations, especially a lot of terminology such as PAP and SOAR. It was really cool to install and configure a SIEM, case management platform and configure endpoints (deploying Wazuh agents to ingest logs from sysmon). In addition, using Wazuh to sift through alerts, create custom rules, and learn about the MITRE ATT&CK framework, it was very insightful. Lastly, using Shuffle to learn about SOAR for workflow automation was great through utilising webhooks to take Wazuh alerts, combining different apps/tools such as extracting info like file hash with regex, and integrating VirusTotal to check if the file hash is malicious. 
+
+Although I couldn't get the active response aspect to work as well as I hoped it would with Wazuh (such as stopping the malware if it were to be run), I'm excited to work on new projects and challenges! I hope you enjoyed my adventure in creating a makeshift SOC environment and learned a thing or 2 about security operations :D
+
+![](assets/img/ty.gif)
