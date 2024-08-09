@@ -608,8 +608,8 @@ We can combine this with our Shuffle workflow so that when Mimikatz is executed,
 
 ## Concluding thoughts
 
-This project turned out way bigger and much longer than I ever thought it would be. But, I did learn so much when it comes to security operations, especially a lot of terminology such as PAP and SOAR. It was really cool to install and configure a SIEM, case management platform and configure endpoints (deploying Wazuh agents to ingest logs from sysmon). In addition, using Wazuh to sift through alerts, create custom rules, and learn about the MITRE ATT&CK framework, it was very insightful. Lastly, using Shuffle to learn about SOAR for workflow automation was great through utilising webhooks to take Wazuh alerts, combining different apps/tools such as extracting info like file hash with regex, and integrating VirusTotal to check if the file hash is malicious. 
+This project turned out way bigger and much longer than I ever thought it would be. But, I did learn so much when it comes to security operations, especially a lot of terminology such as PAP and SOAR. It was really cool to install and configure a SIEM, case management platform and configure endpoints (deploying Wazuh agents to ingest logs from sysmon). In addition, using Wazuh to sift through alerts, create custom rules, and learn about the MITRE ATT&CK framework, was all very insightful. Lastly, using Shuffle to learn about SOAR for workflow automation was great through utilising webhooks to take Wazuh alerts, combining different apps/tools such as extracting info like file hash with regex, and integrating VirusTotal to check if the file hash is malicious. 
 
 Although I couldn't get the active response aspect to work as well as I hoped it would with Wazuh (such as stopping the malware if it were to be run), I'm excited to work on new projects and challenges! I hope you enjoyed my adventure in creating a makeshift SOC environment and learned a thing or 2 about security operations :D
 
-![](assets/img/ty.gif)
+Thank you for reading! 😊
