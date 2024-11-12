@@ -316,7 +316,7 @@ FLOSS.exe -n 8 putty.exe
 - Imports like DeleteFileA, RegDeleteKeyA, ShellExecuteA, won't always be indicators of malicious activity and that can they be a part of the normal functionality within a binary.
 - We can look into the events of a child process in ProcMon by adding a filter that says to "give me all the events where the parent PID (Process ID) is (whatever)".
 
-![](assets/img/parentpid.png)
+![](assets/img/parentPID.png)
 
 This will give us all the events that belong to the child process of the parent PID (which was <code class="language-plaintext highlighter-rouge">powershell.exe</code>).
 
