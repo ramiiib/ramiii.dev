@@ -22,10 +22,9 @@ Welcome to my cyber security blog where I'll be building projects (and my skills
 - [x] SOAR automation project
 
 ## 🚧 In Progress
-- Nothing yet
+- Research into malware analysis
+- HTB challenges and writeups
 
 
 ## ⏳ Future plans
 - [ ] Work with Splunk and Active Directory (maybe another project for this?)
-- [ ] HTB challenges and writeups
-- [ ] Research into malware analysis
