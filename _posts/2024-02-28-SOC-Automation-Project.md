@@ -612,4 +612,6 @@ This project turned out way bigger and much longer than I ever thought it would 
 
 Although I couldn't get the active response aspect to work as well as I hoped it would with Wazuh (such as stopping the malware if it were to be run), I'm excited to work on new projects and challenges! I hope you enjoyed my adventure in creating a makeshift SOC environment and learned a thing or 2 about security operations :D
 
+Massive thank you to <a href="https://www.youtube.com/@mydfir" target="_blank">MyDFIR</a> for the incredible project.
+
 Thank you for reading! 😊
