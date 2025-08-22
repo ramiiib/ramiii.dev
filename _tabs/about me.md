@@ -6,7 +6,7 @@ order: 4
 
 # Hi there!
 
-Welcome to my cyber security blog where I'll be building projects (and my skills). Currently finishing up a Bachelor of IT majoring in Software Technology at Macquarie University. But ever since I joined uni, I've looked into the cyber sec world more and more and started to really enjoy learning about it. Since then, I'm now hoping to turn this passion for cyber sec into my career and will be documenting my journey with this blog post right here! 
+Welcome to my cybersec blog! I’m an aspiring security researcher currently working in Managed Detection and Response (MDR), with a background in software programming. My passion for cybersecurity began in high school, when I would love to watch video essays about high-profile cyberattacks and other general cybercrime (still do). I'll be using this blog to share any projects, research, or cool things I learn about as I continue to grow in the cybersecurity industry.
 
 ![duck walking](assets/img/duck.gif)
 
@@ -20,10 +20,10 @@ Welcome to my cyber security blog where I'll be building projects (and my skills
 
 ## ✅ Completed
 - [x] SOAR automation project
-- [x] Some research into malware analysis
+- [x] Learnt how to analyse a binary both statically and dynamically (at a decent level)
 
 ## 🚧 In Progress
-- Nothing currently as I'm just working at CrowdStrike full-time in their graduate program
+- Gaining more hands on experience using disassemblers, particularly I'm focusing on learning Binary Ninja right now
 
 ## ⏳ Future plans
-- [ ] Improve reverse engineering skills (like de-obfuscating C# binaries and how to use IDA)
+- [ ] Participate in Flare-On Challenge 2025

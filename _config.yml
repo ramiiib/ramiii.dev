@@ -16,10 +16,10 @@ timezone: Australia/Sydney
 
 title: Rami's Dev Page # the main title
 
-tagline: Blue teamer - Aspiring Security Engineer # it will display as the sub-title
+tagline: Aspiring Security Researcher # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
-  Blue teamer - Aspiring Security Engineer
+  Blue team - Aspiring Security Researcher
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
