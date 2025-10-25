@@ -26,4 +26,4 @@ Welcome to my cybersec blog! I’m an aspiring security researcher currently wor
 - Gaining more hands on experience using disassemblers, particularly I'm focusing on learning Binary Ninja right now
 
 ## ⏳ Future plans
-- [ ] Participate in Flare-On Challenge 2025
+- Nothing planned
