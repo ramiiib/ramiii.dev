@@ -38,10 +38,9 @@ social:
   email: ramiiib27@gmail.com
   links:
     # The first element serves as the copyright owner's link
-    - https://www.linkedin.com/in/ramiib # change to your github homepage
+
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    - https://github.com/ramiiib
 
 google_site_verification: # fill in to your verification string
 
